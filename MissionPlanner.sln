@@ -185,8 +185,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FaceMap", "Plugins\FaceMap\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ntrip", "ExtLibs\Ntrip\Ntrip.csproj", "{CBB78367-91B7-4D53-AD31-429B71F867D2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Windows.Forms-net_4_x", "ExtLibs\mono\mcs\class\System.Windows.Forms\System.Windows.Forms-net_4_x.csproj", "{E4902330-74FE-45F6-86C3-0A5F73A1EEC0}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Drawing", "Drawing", "{3CA4F989-80BA-4814-8CC1-6D0DC1F5FF52}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{0371886E-5A61-4626-B9E0-50A837ECE2DD}"
