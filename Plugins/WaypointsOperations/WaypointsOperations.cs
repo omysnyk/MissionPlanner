@@ -1,15 +1,21 @@
-﻿using System;
+﻿using MissionPlanner;
+using MissionPlanner.Controls;
+using MissionPlanner.Plugin;
+using MissionPlanner.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using MissionPlanner.Controls;
+using ZedGraph;
 using ComboBox = System.Windows.Forms.ComboBox;
+using Label = System.Windows.Forms.Label;
+using Point = System.Drawing.Point;
 using ToolTip = System.Windows.Forms.ToolTip;
 
-namespace MissionPlanner.plugins
+namespace WaypointsOperations
 {
-    public class WaypointsOperations : Plugin.Plugin
+    public class WaypointsOperations : Plugin
     {
         private readonly ToolTip _toolTip = new ToolTip();
 
@@ -21,19 +27,20 @@ namespace MissionPlanner.plugins
         public Label LblCurrBuffer;
         public FlowLayoutPanel PnlWaypointsOperations;
 
-        public override string Name => "Waypoints Operations";
 
-        public override string Version => "0.0.2";
+        public override string Name => "Waypoints Operations";
+        
+        public override string Version => "1.0.2";
 
         public override string Author => "Marquise de Carabas";
 
-        public override bool Exit()
-        {
+        public override bool Exit() {
             return true;
         }
 
-        public override bool Init()
-        {
+        public override bool Init() {
+            _approachBuilder = new ApproachBuilder(this);
+
             Console.WriteLine(@"[WAYPOINTS OPERATIONS] Plugin INITIALIZED");
             return true;
         }
@@ -42,13 +49,12 @@ namespace MissionPlanner.plugins
         {
             var pluginPanel = MainV2.instance.FlightPlanner.panelWaypoints;
             //var pluginPanel = MainV2.instance.FlightPlanner.flowLayoutPanel1;
-            LblCurrBuffer = new Label
-            {
+            LblCurrBuffer = new Label {
                 Text = @"Buffer: Empty",
                 Width = 200
             };
             BtnAddApproachWaypoints =
-                CreateButtonAt("Approach", "Add mission approach waypoints", 0, 0, BtnAddApproachClick);
+                CreateButtonAt("Approach", "Add mission approach waypoints", 0, 0, (sender, e) => _approachBuilder.AddApproachPoints());
             BtnCopyWaypoints = CreateButtonAt("Copy", "Copy waypoints to buffer", 0, 0, BtnCopyWaypointsClick);
             BtnInsertWaypoints = CreateButtonAt("Insert", "Insert waypoints from buffer after selected point", 0, 0,
                 BtnInsertWaypointsClick);
@@ -66,7 +72,7 @@ namespace MissionPlanner.plugins
             pluginPanel.SuspendLayout();
             PnlWaypointsOperations.SuspendLayout();
 
-            //PnlWaypointsOperations.Controls.Add(BtnAddApproachWaypoints);
+            PnlWaypointsOperations.Controls.Add(BtnAddApproachWaypoints);
             PnlWaypointsOperations.Controls.Add(BtnCopyWaypoints);
             PnlWaypointsOperations.Controls.Add(BtnInsertWaypoints);
             PnlWaypointsOperations.Controls.Add(BtnReplaceWaypoints);
@@ -82,18 +88,15 @@ namespace MissionPlanner.plugins
             return true;
         }
 
-        public void BtnReplaceWaypointsClick(object sender, EventArgs e)
-        {
+        public void BtnReplaceWaypointsClick(object sender, EventArgs e) {
             var selectedRows = MainV2.instance.FlightPlanner.Commands.SelectedRows;
             var selectedCells = MainV2.instance.FlightPlanner.Commands.SelectedCells;
-            if (!(_copiedCellValues?.Count > 0))
-            {
+            if (!(_copiedCellValues?.Count > 0)) {
                 CustomMessageBox.Show("Buffer is empty!");
                 return;
             }
 
-            if (selectedRows.Count == 0 && selectedCells.Count == 0)
-            {
+            if (selectedRows.Count == 0 && selectedCells.Count == 0) {
                 CustomMessageBox.Show("No target rows selected!");
                 return;
             }
@@ -103,14 +106,12 @@ namespace MissionPlanner.plugins
             var index = rowsToReplace[0].Index;
             var endIndex = rowsToReplace[rowsToReplace.Count - 1].Index;
 
-            if (endIndex != index + rowsToReplace.Count - 1)
-            {
+            if (endIndex != index + rowsToReplace.Count - 1) {
                 CustomMessageBox.Show("Select sequential rows!");
                 return;
             }
 
-            for (var i = 0; i < rowsToReplace.Count; i++)
-            {
+            for (var i = 0; i < rowsToReplace.Count; i++) {
                 MainV2.instance.FlightPlanner.updateUndoBuffer(true);
                 MainV2.instance.FlightPlanner.quickadd = true;
                 // mono fix
@@ -120,8 +121,7 @@ namespace MissionPlanner.plugins
                 MainV2.instance.FlightPlanner.writeKML();
             }
 
-            foreach (var sourceRow in _copiedCellValues)
-            {
+            foreach (var sourceRow in _copiedCellValues) {
                 MainV2.instance.FlightPlanner.updateUndoBuffer(true);
                 MainV2.instance.FlightPlanner.Commands.Rows.Insert(index);
                 var newRow = MainV2.instance.FlightPlanner.Commands.Rows[index];
@@ -134,19 +134,16 @@ namespace MissionPlanner.plugins
             }
         }
 
-        public void BtnInsertWaypointsClick(object sender, EventArgs e)
-        {
+        public void BtnInsertWaypointsClick(object sender, EventArgs e) {
             var selectedRows = MainV2.instance.FlightPlanner.Commands.SelectedRows;
             var selectedCells = MainV2.instance.FlightPlanner.Commands.SelectedCells;
 
-            if (!(_copiedCellValues?.Count > 0))
-            {
+            if (!(_copiedCellValues?.Count > 0)) {
                 CustomMessageBox.Show("Buffer is empty!");
                 return;
             }
 
-            if (selectedRows.Count == 0 && selectedCells.Count == 0)
-            {
+            if (selectedRows.Count == 0 && selectedCells.Count == 0) {
                 CustomMessageBox.Show("No target row selected!");
                 return;
             }
@@ -154,8 +151,7 @@ namespace MissionPlanner.plugins
             var rowsToReplace = GetSelectedRows();
             var endIndex = rowsToReplace[rowsToReplace.Count - 1].Index + 1;
 
-            foreach (var sourceRow in _copiedCellValues)
-            {
+            foreach (var sourceRow in _copiedCellValues) {
                 MainV2.instance.FlightPlanner.updateUndoBuffer(true);
                 MainV2.instance.FlightPlanner.Commands.Rows.Insert(endIndex);
                 var newRow = MainV2.instance.FlightPlanner.Commands.Rows[endIndex];
@@ -164,21 +160,12 @@ namespace MissionPlanner.plugins
                 MainV2.instance.FlightPlanner.writeKML();
                 endIndex++;
             }
-
-            // foreach (var rowToInsert in _copiedRowsBuffer) {
-            //     MainV2.instance.FlightPlanner.updateUndoBuffer(true);
-            //     MainV2.instance.FlightPlanner.Commands.Rows.Insert(++endIndex, rowToInsert);
-            //     Console.WriteLine($@"Inserted {_copiedRowsBuffer.IndexOf(rowToInsert)} row at index {endIndex}");
-            //     MainV2.instance.FlightPlanner.writeKML();
-            // }
         }
 
-        public void BtnCopyWaypointsClick(object sender, EventArgs e)
-        {
+        public void BtnCopyWaypointsClick(object sender, EventArgs e) {
             var selectedRows = MainV2.instance.FlightPlanner.Commands.SelectedRows;
             var selectedCells = MainV2.instance.FlightPlanner.Commands.SelectedCells;
-            if (selectedRows.Count == 0 && selectedCells.Count == 0)
-            {
+            if (selectedRows.Count == 0 && selectedCells.Count == 0) {
                 CustomMessageBox.Show("No rows selected!");
                 return;
             }
@@ -193,31 +180,36 @@ namespace MissionPlanner.plugins
 
             PnlWaypointsOperations.SuspendLayout();
             if (MainV2.instance.FlightPlanner.lbl_wpfile.Text.Contains("Loaded") ||
-                MainV2.instance.FlightPlanner.lbl_wpfile.Text.Contains("Saved"))
-            {
+                MainV2.instance.FlightPlanner.lbl_wpfile.Text.Contains("Saved")) {
                 var fileName = MainV2.instance.FlightPlanner.lbl_wpfile.Text.Split(' ')[1];
                 LblCurrBuffer.Text = $@"Buffer: {fileName} [{startIndex + 1}:{endIndex + 1}]";
-            }
-            else
-            {
+            } else {
                 LblCurrBuffer.Text = $@"Buffer: [{startIndex + 1}:{endIndex + 1}]";
             }
 
             PnlWaypointsOperations.ResumeLayout(true);
         }
+        
 
+        private PointPairList RouteElevationProfile = new PointPairList();
+        private PointPairList TerrainElevationProfile = new PointPairList();
 
-        public void BtnAddApproachClick(object sender, EventArgs e)
+        private ApproachBuilder _approachBuilder;
+
+        private static (double lat, double lon, double alt) ExtractCoords(DataGridViewRow lastCommand)
         {
-            var approachAlt = 60;
-            if (InputBox.Show("Approach Parameters", "Select approach altitude above target", ref approachAlt) !=
-                DialogResult.OK)
-            {
-            }
+            var lat = double.Parse(lastCommand.Cells[5].Value.ToString());
+            var lon = double.Parse(lastCommand.Cells[6].Value.ToString());
+            var alt = double.Parse(lastCommand.Cells[7].Value.ToString()) / CurrentState.multiplieralt;
+
+            return (lat: lat, lon: lon, alt: alt);
         }
 
-        private List<DataGridViewRow> GetSelectedRows()
-        {
+        private ushort ExtractCmd(DataGridViewRow row) {
+            return MainV2.instance.FlightPlanner.getCmdID(row.Cells[0].Value.ToString());
+        }
+
+        private List<DataGridViewRow> GetSelectedRows() {
             var flightPlanner = MainV2.instance.FlightPlanner;
             var commands = flightPlanner.Commands;
             var selectedRows = commands.SelectedRows;
@@ -233,13 +225,11 @@ namespace MissionPlanner.plugins
             return targetRows;
         }
 
-        private MyButton CreateButtonAt(string buttonText, string tooltip, int col, int row, EventHandler clickHandler)
-        {
+        private MyButton CreateButtonAt(string buttonText, string tooltip, int col, int row, EventHandler clickHandler) {
             const int ButtonWidth = 75;
             const int ButtonHeight = 23;
 
-            var button = new MyButton
-            {
+            var button = new MyButton {
                 Text = buttonText,
                 Size = new Size(ButtonWidth, ButtonHeight)
             };
@@ -250,15 +240,13 @@ namespace MissionPlanner.plugins
             return button;
         }
 
-        private ComboBox CreateComboAt(string[] items, int col, int row)
-        {
+        private ComboBox CreateComboAt(string[] items, int col, int row) {
             const int boxWdth = 35;
             const int boxHorisontalMargins = 6;
             const int boxHeight = 23;
             const int boxVerticalMargins = 4;
 
-            var combobox = new ComboBox
-            {
+            var combobox = new ComboBox {
                 Location = new Point(4 + (boxWdth + boxHorisontalMargins) * col,
                     4 + (boxHeight + boxVerticalMargins) * row),
                 Size = new Size(boxWdth, boxHeight)
