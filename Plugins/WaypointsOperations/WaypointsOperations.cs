@@ -1,13 +1,11 @@
 ﻿using MissionPlanner;
 using MissionPlanner.Controls;
 using MissionPlanner.Plugin;
-using MissionPlanner.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using ZedGraph;
 using ComboBox = System.Windows.Forms.ComboBox;
 using Label = System.Windows.Forms.Label;
 using Point = System.Drawing.Point;
@@ -189,10 +187,6 @@ namespace WaypointsOperations
 
             PnlWaypointsOperations.ResumeLayout(true);
         }
-        
-
-        private PointPairList RouteElevationProfile = new PointPairList();
-        private PointPairList TerrainElevationProfile = new PointPairList();
 
         private ApproachBuilder _approachBuilder;
 

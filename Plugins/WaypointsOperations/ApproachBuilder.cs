@@ -1,15 +1,11 @@
-﻿using BruTile.Wms;
-using GeographicLib;
+﻿using GeographicLib;
 using MissionPlanner;
 using MissionPlanner.Controls;
 using MissionPlanner.Plugin;
 using MissionPlanner.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WaypointsOperations
@@ -46,7 +42,7 @@ namespace WaypointsOperations
                 return;
             }
 
-            var endIndex = routePoints.Count(alt => alt.Tag !="H") - 1; // exclude home if present
+            var endIndex = routePoints.Count(alt => alt?.Tag != "H") - 1; // exclude home if present
             var lastPoint = routePoints[routePoints.Count - 1];
             var nextToLastPoint = routePoints[routePoints.Count - 2];
 
