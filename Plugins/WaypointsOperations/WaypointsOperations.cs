@@ -1,11 +1,11 @@
-﻿using MissionPlanner;
-using MissionPlanner.Controls;
-using MissionPlanner.Plugin;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using MissionPlanner;
+using MissionPlanner.Controls;
+using MissionPlanner.Plugin;
 using ComboBox = System.Windows.Forms.ComboBox;
 using Label = System.Windows.Forms.Label;
 using Point = System.Drawing.Point;
@@ -39,7 +39,7 @@ namespace WaypointsOperations
         public override bool Init() {
             _approachBuilder = new ApproachBuilder(this);
 
-            Console.WriteLine(@"[WAYPOINTS OPERATIONS] Plugin INITIALIZED");
+            Console.WriteLine($@"[{Name}] Plugin INITIALIZED");
             return true;
         }
 
@@ -81,7 +81,7 @@ namespace WaypointsOperations
 
             PnlWaypointsOperations.ResumeLayout(false);
             pluginPanel.ResumeLayout(false);
-            Console.WriteLine(@"[WAYPOINTS OPERATIONS] Plugin LOADED");
+            Console.WriteLine($@"[{Name}] Plugin LOADED");
 
             return true;
         }

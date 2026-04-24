@@ -6,7 +6,6 @@
     <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-    <!-- <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies> -->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -14,12 +13,6 @@
     <DebugType>portable</DebugType>
     <outputPath>..\..\bin\Debug\net461\plugins\</outputPath>
   </PropertyGroup>
-
-  <!-- <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"> -->
-  <!--   <NoWarn>1701;1702;NU1605</NoWarn> -->
-  <!--   <DebugType>portable</DebugType> -->
-  <!--   <outputPath>..\bin\Debug\net461\</outputPath> -->
-  <!-- </PropertyGroup> -->
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <NoWarn>1701;1702;NU1605</NoWarn>
@@ -32,12 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ExtLibs\ArduPilot\MissionPlanner.ArduPilot.csproj" />
-    <ProjectReference Include="..\..\ExtLibs\GMap.NET.Core\GMap.NET.Core.csproj" />
-    <ProjectReference Include="..\..\ExtLibs\Utilities\MissionPlanner.Utilities.csproj" />
-    <ProjectReference Include="..\..\MissionPlanner.csproj">
-      <!-- <Private>false</Private> -->
-    </ProjectReference>
+    <ProjectReference Include="..\..\ExtLibs\Controls\MissionPlanner.Controls.csproj" />
+    <ProjectReference Include="..\..\MissionPlanner.csproj"/>
   </ItemGroup>
 
 </Project>

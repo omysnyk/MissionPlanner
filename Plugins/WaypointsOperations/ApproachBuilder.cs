@@ -1,25 +1,35 @@
-﻿using GeographicLib;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+using GeographicLib;
 using MissionPlanner;
 using MissionPlanner.Controls;
 using MissionPlanner.Plugin;
 using MissionPlanner.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace WaypointsOperations
 {
     internal class ApproachBuilder
     {
+        private static readonly Geodesic Geod = Geodesic.WGS84;
+
+        private static readonly Dictionary<int, int> ApproachDescentAngles = new Dictionary<int, int>
+        {
+            { 40, 18 },
+            { 60, 23 },
+            { 80, 26 },
+            { 100, 30 }
+        };
+
         public Plugin WaypointsPlugin;
 
         public ApproachBuilder(Plugin waypointsPlugin)
         {
-            this.WaypointsPlugin = waypointsPlugin;
+            WaypointsPlugin = waypointsPlugin;
         }
 
-        static double ToRadians(double degrees)
+        private static double ToRadians(double degrees)
         {
             return degrees * Math.PI / 180.0;
         }
@@ -29,9 +39,7 @@ namespace WaypointsOperations
             var approachAlt = 60;
             if (InputBox.Show("Approach Parameters", "Select approach altitude above target", ref approachAlt) !=
                 DialogResult.OK)
-            {
                 return;
-            }
 
             if (!ApproachDescentAngles.TryGetValue(approachAlt, out var approachDescentAngle))
             {
@@ -117,15 +125,5 @@ namespace WaypointsOperations
 
             flightPlanner.CHK_verifyheight.Checked = verifyCheckerState;
         }
-
-        private static readonly Geodesic Geod = Geodesic.WGS84;
-
-        private static readonly Dictionary<int, int> ApproachDescentAngles = new Dictionary<int, int>
-        {
-            { 40, 18 },
-            { 60, 23 },
-            { 80, 26 },
-            { 100, 30 }
-        };
     }
 }
