@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;NU1605</NoWarn>
+    <DebugType>portable</DebugType>
+    <outputPath>..\..\bin\Debug\net461\plugins\</outputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;NU1605</NoWarn>
+    <DebugType>portable</DebugType>
+    <outputPath>..\..\bin\Release\net461\plugins\</outputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ExtLibs\Controls\MissionPlanner.Controls.csproj" />
+    <ProjectReference Include="..\..\ExtLibs\MissionPlanner.Drawing\MissionPlanner.Drawing.csproj">
+      <Aliases>MPDrawing</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ExtLibs\SharpKml\SharpKml.csproj" />
+    <ProjectReference Include="..\..\MissionPlanner.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="SelectKmzItemsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>
