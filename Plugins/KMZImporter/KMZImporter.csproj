@@ -21,12 +21,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ReaLTaiizor" Version="3.7.8.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\ExtLibs\Controls\MissionPlanner.Controls.csproj" />
     <ProjectReference Include="..\..\ExtLibs\MissionPlanner.Drawing\MissionPlanner.Drawing.csproj">
       <Aliases>MPDrawing</Aliases>
     </ProjectReference>
     <ProjectReference Include="..\..\ExtLibs\SharpKml\SharpKml.csproj" />
-    <ProjectReference Include="..\..\MissionPlanner.csproj"/>
+    <ProjectReference Include="..\..\MissionPlanner.csproj" />
   </ItemGroup>
 
   <ItemGroup>

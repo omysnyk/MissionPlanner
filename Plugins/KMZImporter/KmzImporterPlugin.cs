@@ -1,6 +1,7 @@
 ﻿using MissionPlanner.Controls;
 using MissionPlanner.Plugin;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace KMZImporter
@@ -15,7 +16,10 @@ namespace KMZImporter
 
         public MyButton BtnLoadKmz;
         public MyButton BtnClearOverlay;
+        public MyButton BtnFilter;
         public FlowLayoutPanel PnlKmzImporter;
+        private OverlaySlidePanel PnlSlideFilter;
+
 
         public override bool Exit() {
             return true;
@@ -43,9 +47,15 @@ namespace KMZImporter
 
             BtnClearOverlay = new MyButton {
                 Text = @"Clear Overlay",
-                Size = new System.Drawing.Size(buttonWidth, buttonHeight)
+                Size = new Size(buttonWidth, buttonHeight)
             };
             BtnClearOverlay.Click += (sender, e) => _kmzImporter.ClearOverlay();
+
+            BtnFilter = new MyButton
+            {
+                Text = @"Filter",
+                Size = new Size(buttonWidth, buttonHeight)
+            };
 
             PnlKmzImporter = new FlowLayoutPanel
             {
@@ -55,10 +65,19 @@ namespace KMZImporter
                 Padding = new Padding {All = 3}
             };
 
-            // var pluginPanel = Host.MainForm.FlightPlanner.flowLayoutPanel1;
+            PnlSlideFilter = new OverlaySlidePanel
+            {
+                PanelWidth = 260
+            };
+
+            BtnFilter.Click += (sender, e) => PnlSlideFilter.Toggle();
+
+            pluginPanel.AutoScroll = false;
             pluginPanel.SuspendLayout();
             PnlKmzImporter.Controls.Add(BtnLoadKmz);
             PnlKmzImporter.Controls.Add(BtnClearOverlay);
+            PnlKmzImporter.Controls.Add(BtnFilter);
+            PnlSlideFilter.AttachTo(Host.MainForm.FlightPlanner.MainMap);
             pluginPanel.Controls.Add(PnlKmzImporter);
 
             PnlKmzImporter.ResumeLayout(false);
