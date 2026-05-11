@@ -219,7 +219,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerrainMakerPlugin", "Plugi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nefarius.Drivers.WinUSB", "ExtLibs\WinUSBNet\Nefarius.Drivers.WinUSB.csproj", "{1B7BA502-81BE-E37A-E82A-3BB298BCA984}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaypointsOperations", "Plugins\WaypointsOperations\WaypointsOperations.csproj", "{E47DF785-A8DE-4CFA-8664-683CE3F9CC7F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MissionActionsPlugin", "Plugins\WaypointsOperations\MissionActionsPlugin.csproj", "{E47DF785-A8DE-4CFA-8664-683CE3F9CC7F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KMZImporter", "Plugins\KMZImporter\KMZImporter.csproj", "{3A1F2604-495E-5616-0004-C89EAA73B299}"
 EndProject

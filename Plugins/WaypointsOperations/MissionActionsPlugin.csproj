@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;NU1605</NoWarn>
+    <DebugType>portable</DebugType>
+    <outputPath>..\..\bin\Debug\net461\plugins\</outputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;NU1605</NoWarn>
+    <DebugType>portable</DebugType>
+    <outputPath>..\..\bin\Release\net461\plugins\</outputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\airport-map-location-black-icon.png" />
+    <None Remove="Resources\airport-map-location-black-icon_32.png" />
+    <None Remove="Resources\altitude-icon-2-24.png" />
+    <None Remove="Resources\altitude-icon-24.png" />
+    <None Remove="Resources\altitude-icon-3-24.png" />
+    <None Remove="Resources\altitude-icon-4-24.png" />
+    <None Remove="Resources\plane-landing-icon.png" />
+    <None Remove="Resources\runway-icon-small.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\altitude-icon-24.png" />
+    <EmbeddedResource Include="Resources\altitude-icon-4-24.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GeographicLib.NET" Version="2.3.2" />
+    <PackageReference Include="ReaLTaiizor" Version="3.7.8.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ExtLibs\Controls\MissionPlanner.Controls.csproj" />
+    <ProjectReference Include="..\..\MissionPlanner.csproj" />
+    <ProjectReference Include="..\..\ExtLibs\MissionPlanner.Drawing\MissionPlanner.Drawing.csproj">
+      <Aliases>MPDrawing</Aliases>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

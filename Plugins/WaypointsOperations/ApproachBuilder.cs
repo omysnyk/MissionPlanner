@@ -22,11 +22,11 @@ namespace WaypointsOperations
             { 100, 30 }
         };
 
-        public Plugin WaypointsPlugin;
+        private readonly Plugin _plugin;
 
         public ApproachBuilder(Plugin waypointsPlugin)
         {
-            WaypointsPlugin = waypointsPlugin;
+            _plugin = waypointsPlugin;
         }
 
         private static double ToRadians(double degrees)
@@ -100,26 +100,26 @@ namespace WaypointsOperations
 
             flightPlanner.CHK_verifyheight.CheckState = CheckState.Unchecked;
             flightPlanner.CHK_verifyheight.Checked = false;
-            WaypointsPlugin.Host.InsertWP(endIndex, MAVLink.MAV_CMD.WAYPOINT, 0, 0, 0, 0,
+            _plugin.Host.InsertWP(endIndex, MAVLink.MAV_CMD.WAYPOINT, 0, 0, 0, 0,
                 newPoint.Longitude, newPoint.Latitude,
                 aimAlt);
 
             distFromEnd = Math.Max(0, line.Distance - 1750);
             newPoint = line.Position(distFromEnd);
-            WaypointsPlugin.Host.InsertWP(endIndex + 1, MAVLink.MAV_CMD.DO_CHANGE_SPEED, 0, 42, 0, 0,
+            _plugin.Host.InsertWP(endIndex + 1, MAVLink.MAV_CMD.DO_CHANGE_SPEED, 0, 42, 0, 0,
                 newPoint.Longitude, newPoint.Latitude,
                 aimAlt);
 
             distFromEnd = Math.Max(0, line.Distance - 1500);
             newPoint = line.Position(distFromEnd);
-            WaypointsPlugin.Host.InsertWP(endIndex + 2, MAVLink.MAV_CMD.WAYPOINT, 0, 0, 0, 0,
+            _plugin.Host.InsertWP(endIndex + 2, MAVLink.MAV_CMD.WAYPOINT, 0, 0, 0, 0,
                 newPoint.Longitude, newPoint.Latitude,
                 aimAlt);
 
             var aimPointDistance = approachAlt * 1.0 / Math.Tan(ToRadians(approachDescentAngle));
             distFromEnd = Math.Max(0, line.Distance - aimPointDistance);
             newPoint = line.Position(distFromEnd);
-            WaypointsPlugin.Host.InsertWP(endIndex + 3, MAVLink.MAV_CMD.WAYPOINT, 0, 0, 0, 0,
+            _plugin.Host.InsertWP(endIndex + 3, MAVLink.MAV_CMD.WAYPOINT, 0, 0, 0, 0,
                 newPoint.Longitude, newPoint.Latitude,
                 aimAlt);
 
