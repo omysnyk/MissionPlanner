@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using GeographicLib;
+using MissionActionsPlugin;
 using MissionPlanner;
 using MissionPlanner.Controls;
 using MissionPlanner.Plugin;
@@ -36,11 +37,12 @@ namespace WaypointsOperations
 
         public void AddApproachPoints()
         {
-            var approachAlt = 60;
-            if (InputBox.Show("Approach Parameters", "Select approach altitude above target", ref approachAlt) !=
-                DialogResult.OK)
+           
+            var approachParametersForm = new ApproachParametersForm();
+            if (approachParametersForm.ShowDialog() != DialogResult.OK)
                 return;
 
+            var approachAlt = approachParametersForm.ApproachAltitude;
             if (!ApproachDescentAngles.TryGetValue(approachAlt, out var approachDescentAngle))
             {
                 CustomMessageBox.Show("Unsupported approach altitude.",

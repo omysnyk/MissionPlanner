@@ -4,9 +4,11 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using GMap.NET;
 using GMap.NET.WindowsForms;
+using log4net;
 using MissionPlanner.GCSViews;
 using MissionPlanner.Utilities;
 using CustomMessageBox = MissionPlanner.MsgBox.CustomMessageBox;
@@ -15,6 +17,8 @@ namespace MissionActionsPlugin
 {
     internal class ElevationProfileValidator
     {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod()?.DeclaringType);
+        
         private readonly GMapOverlay _elevationValidationOverlay;
         private readonly MissionActionsPlugin _plugin;
         private readonly FlightPlanner _plannerModule;
@@ -39,14 +43,17 @@ namespace MissionActionsPlugin
 
         private void OnMissionFileLoad(object sender, EventArgs e)
         {
+            log.Info($"WP file reloaded, clear rules");
             _validationRules.Clear();
             _elevationValidationOverlay.Routes.Clear();
         }
         
         private void OnMissionEdited(object sender, CollectionChangeEventArgs e)
         {
+            log.Info($"Mission edited");
             if (e.Action == CollectionChangeAction.Add || e.Action == CollectionChangeAction.Remove)
             {
+                log.Info($"Mission entries: {e.Action}");
                 _validationRules = new List<ValidationRule>();
                 _elevationValidationOverlay.Routes.Clear();
             }
@@ -56,6 +63,8 @@ namespace MissionActionsPlugin
         {
             _elevationValidationOverlay.Routes.Clear();
             var mission = _plannerModule.pointlist;
+            var missionStr = mission.Select(p => p == null ? "[]" : $"{p.Tag}").Aggregate((s, s1) => $"{s}, {s1}");
+            log.Info($"Mission items: {missionStr}");
             var waypoints = new List<int>();
             for (var i = 0; i < mission?.Count; i++)
             {
@@ -65,6 +74,8 @@ namespace MissionActionsPlugin
                 }
             }
 
+            var waypointsStr = waypoints.Select(i => $"{i}").Aggregate((s, s1) => $"{s}, {s1}");
+            log.Info($"Mission waypoints: {waypointsStr}");
             if (!waypoints.Any())
             {
                 CustomMessageBox.Show("No valid route loaded!");
