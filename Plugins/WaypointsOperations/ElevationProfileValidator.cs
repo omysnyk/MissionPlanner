@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -38,12 +39,21 @@ namespace MissionActionsPlugin
 
             _plannerModule.Commands.Rows.CollectionChanged -= OnMissionEdited;
             _plannerModule.Commands.Rows.CollectionChanged += OnMissionEdited;
+            _plannerModule.clearMissionToolStripMenuItem.Click -= OnMissionCleared;
+            _plannerModule.clearMissionToolStripMenuItem.Click += OnMissionCleared;
             _mission = _plannerModule.pointlist;
         }
 
         private void OnMissionFileLoad(object sender, EventArgs e)
         {
             log.Info($"WP file reloaded, clear rules");
+            _validationRules.Clear();
+            _elevationValidationOverlay.Routes.Clear();
+        }
+        
+        private void OnMissionCleared(object sender, EventArgs e)
+        {
+            log.Info($"Mission cleared, clear rules");
             _validationRules.Clear();
             _elevationValidationOverlay.Routes.Clear();
         }
@@ -70,7 +80,7 @@ namespace MissionActionsPlugin
             {
                 if (mission[i] != null && mission[i].Tag != "H")
                 {
-                    waypoints.Add(i);
+                    waypoints.Add(int.Parse(mission[i].Tag));
                 }
             }
 
@@ -107,6 +117,8 @@ namespace MissionActionsPlugin
             var validationRule = validationRules.Dequeue();
 
             var invalidSections = new List<(PointLatLng, PointLatLng)>();
+            var invalidCritSections = new List<(PointLatLng, PointLatLng)>();
+            var overSections = new List<(PointLatLng, PointLatLng)>();
             for (var i = 1; i < routeWaypoints.Count - 1; i++)
             {
                 var (segmentEndCoord, endWaypoint) = routeWaypoints[i];
@@ -124,6 +136,12 @@ namespace MissionActionsPlugin
 
                 PointLatLng invalidStart = PointLatLng.Empty;
                 PointLatLng invalidEnd = PointLatLng.Empty;
+                
+                PointLatLng invalidCritStart = PointLatLng.Empty;
+                PointLatLng invalidCritEnd = PointLatLng.Empty;
+                
+                PointLatLng overStart = PointLatLng.Empty;
+                PointLatLng overEnd = PointLatLng.Empty;
                 for (var j = 0; j < points; j++)
                 {
                     var lat = segmentStartCoord.Lat + latStep * j;
@@ -132,7 +150,7 @@ namespace MissionActionsPlugin
 
                     var terrainElevation = srtm.getAltitude(lat, lng).alt;
                     var overlimitDegree = validationRule.OverlimitDegree(alt, terrainElevation);
-                    if (overlimitDegree > 0.0)
+                    if (overlimitDegree < 0.0)
                     {
                         if (invalidStart.IsEmpty)
                         {
@@ -143,7 +161,7 @@ namespace MissionActionsPlugin
                             invalidEnd = new PointLatLng(lat, lng);
                         }
                     }
-                    else
+                    else if (overlimitDegree >= 0.0)
                     {
                         if (!invalidStart.IsEmpty && !invalidEnd.IsEmpty)
                         {
@@ -152,6 +170,50 @@ namespace MissionActionsPlugin
 
                         invalidStart = PointLatLng.Empty;
                         invalidEnd = PointLatLng.Empty;
+                    }
+                    
+                    if (overlimitDegree < -0.5)
+                    {
+                        if (invalidCritStart.IsEmpty)
+                        {
+                            invalidCritStart = new PointLatLng(lat, lng);
+                        }
+                        else
+                        {
+                            invalidCritEnd = new PointLatLng(lat, lng);
+                        }
+                    }
+                    else if (overlimitDegree >= 0.0)
+                    {
+                        if (!invalidCritStart.IsEmpty && !invalidCritEnd.IsEmpty)
+                        {
+                            invalidCritSections.Add((invalidCritStart, invalidCritEnd));
+                        }
+
+                        invalidCritStart = PointLatLng.Empty;
+                        invalidCritEnd = PointLatLng.Empty;
+                    }
+                    
+                    if (overlimitDegree > 0.5)
+                    {
+                        if (overStart.IsEmpty)
+                        {
+                            overStart = new PointLatLng(lat, lng);
+                        }
+                        else
+                        {
+                            overEnd = new PointLatLng(lat, lng);
+                        }
+                    }
+                    else if (overlimitDegree <= 0.0)
+                    {
+                        if (!overStart.IsEmpty && !overEnd.IsEmpty)
+                        {
+                            overSections.Add((overStart, overEnd));
+                        }
+
+                        overStart = PointLatLng.Empty;
+                        overEnd = PointLatLng.Empty;
                     }
                 }
 
@@ -163,6 +225,16 @@ namespace MissionActionsPlugin
                 if (!invalidStart.IsEmpty && !invalidEnd.IsEmpty)
                 {
                     invalidSections.Add((invalidStart, invalidEnd));
+                }
+                
+                if (!invalidCritStart.IsEmpty && !invalidCritEnd.IsEmpty)
+                {
+                    invalidCritSections.Add((invalidCritStart, invalidCritEnd));
+                }
+                
+                if (!overStart.IsEmpty && !overEnd.IsEmpty)
+                {
+                    overSections.Add((overStart, overEnd));
                 }
 
                 (segmentStartCoord, startWaypoint) = routeWaypoints[i];
@@ -181,8 +253,37 @@ namespace MissionActionsPlugin
 
                 _elevationValidationOverlay.Routes.Add(invalidRouteSegment);
             }
+            
+            foreach (var invalidSection in invalidCritSections)
+            {
+                var invalidRouteSegment = new GMapRoute(new[] { invalidSection.Item1, invalidSection.Item2 }, "");
+                var pen = new Pen(new SolidBrush(Color.Crimson), 8f);
+                pen.LineJoin = LineJoin.Round;
+                pen.StartCap = LineCap.Round;
+                pen.EndCap = LineCap.Round;
+                invalidRouteSegment.Stroke = pen;
+
+                _elevationValidationOverlay.Routes.Add(invalidRouteSegment);
+            }
+            
+            /*foreach (var invalidSection in overSections)
+            {
+                var invalidRouteSegment = new GMapRoute(new[] { invalidSection.Item1, invalidSection.Item2 }, "");
+                var pen = new Pen(new SolidBrush(Color.DodgerBlue), 8f);
+                pen.LineJoin = LineJoin.Round;
+                pen.StartCap = LineCap.Round;
+                pen.EndCap = LineCap.Round;
+                invalidRouteSegment.Stroke = pen;
+
+                _elevationValidationOverlay.Routes.Add(invalidRouteSegment);
+            }*/
 
             _plugin.Host.MainForm.FlightPlanner.MainMap.Invalidate();
+        }
+        
+        private List<(int, PointLatLngAlt)> LoadValue()
+        {
+            return WaypointUtils.FilterMissionWaypoints(_plannerModule.pointlist);
         }
     }
 }

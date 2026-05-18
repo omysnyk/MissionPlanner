@@ -82,6 +82,7 @@ namespace MissionActionsPlugin
             addRuleButton.Enabled = false;
             okButton.Enabled = _selectedRangeEnd == _waypoints.Count - 1;
 
+            startWaypointTextBox.Text = $"{_waypoints[_selectedRangeEnd]}";
             _selectedRangeStart = _selectedRangeEnd + 1;
             _selectedRangeEnd = -1;
 
@@ -90,7 +91,7 @@ namespace MissionActionsPlugin
                 return;
             }
 
-            startWaypointTextBox.Text = $"{_waypoints[_selectedRangeStart]}";
+            
             endWaypointTextBox.Text = "";
             _currenRangeColor = _palette[_colorCount++ % _palette.Count];
             var button = GetButtonByIndex(_selectedRangeStart);
@@ -370,22 +371,43 @@ namespace MissionActionsPlugin
         {
             if (ValidationMode == AltitudeValidationMode.ASL)
             {
-                return routeAltitude < MinAlt
-                    ? 1.0
-                    : routeAltitude < TargetAlt * 0.95
-                        ? 0.5
-                        : 0.0;
+                if (routeAltitude < MinAlt)
+                {
+                    return -1.0;
+                }
+            
+                if (routeAltitude > TargetAlt + 20)
+                {
+                    return 1.0;
+                }
+            
+                if (routeAltitude < TargetAlt * 0.95)
+                {
+                    return -0.5;
+                }
+                
+                return 0.0;
             }
 
             var elevation = routeAltitude - terrainAltitude;
-            return elevation < MinAlt
-                ? 1.0
-                : elevation < TargetAlt * 0.95
-                    ? 0.5
-                    : 0.0;
-        }
 
-        
+            if (elevation < MinAlt)
+            {
+                return -1.0;
+            }
+            
+            if (elevation > TargetAlt + 100)
+            {
+                return 1.0;
+            }
+            
+            if (elevation < TargetAlt * 0.95)
+            {
+                return -0.5;
+            }
+
+            return 0.0;
+        }
     }
 
     public enum AltitudeValidationMode

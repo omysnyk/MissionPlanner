@@ -31,35 +31,14 @@ namespace MissionActionsPlugin
         /// </summary>
         private void InitializeComponent()
         {
-            this.okButton = new ReaLTaiizor.Controls.MaterialButton();
             this.stabilizeSpeedSwitch = new ReaLTaiizor.Controls.MaterialSwitch();
             this.approachAltComboBox = new ReaLTaiizor.Controls.MaterialComboBox();
             this.trackerApproachDistTextBox = new ReaLTaiizor.Controls.MaterialTextBox();
             this.trackerActivationWpComboBox = new ReaLTaiizor.Controls.MaterialComboBox();
             this.cancelButton = new ReaLTaiizor.Controls.MaterialButton();
             this.materialTextBox2 = new ReaLTaiizor.Controls.MaterialTextBox();
+            this.okButton = new ReaLTaiizor.Controls.MaterialButton();
             this.SuspendLayout();
-            // 
-            // okButton
-            // 
-            this.okButton.AutoSize = false;
-            this.okButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.okButton.Depth = 0;
-            this.okButton.DrawShadows = true;
-            this.okButton.HighEmphasis = true;
-            this.okButton.Icon = null;
-            this.okButton.Location = new System.Drawing.Point(391, 479);
-            this.okButton.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-            this.okButton.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
-            this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(108, 60);
-            this.okButton.TabIndex = 0;
-            this.okButton.Text = "OK";
-            this.okButton.TextState = ReaLTaiizor.Controls.MaterialButton.TextStateType.Normal;
-            this.okButton.Type = ReaLTaiizor.Controls.MaterialButton.MaterialButtonType.Contained;
-            this.okButton.UseAccentColor = false;
-            this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += new System.EventHandler(this.okButton_Click_1);
             // 
             // stabilizeSpeedSwitch
             // 
@@ -67,7 +46,7 @@ namespace MissionActionsPlugin
             this.stabilizeSpeedSwitch.CheckState = System.Windows.Forms.CheckState.Checked;
             this.stabilizeSpeedSwitch.Depth = 0;
             this.stabilizeSpeedSwitch.Location = new System.Drawing.Point(57, 201);
-            this.stabilizeSpeedSwitch.Margin = new System.Windows.Forms.Padding(0, 1, 0, 0);
+            this.stabilizeSpeedSwitch.Margin = new System.Windows.Forms.Padding(0);
             this.stabilizeSpeedSwitch.MouseLocation = new System.Drawing.Point(-1, -1);
             this.stabilizeSpeedSwitch.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.stabilizeSpeedSwitch.Name = "stabilizeSpeedSwitch";
@@ -159,6 +138,7 @@ namespace MissionActionsPlugin
             this.cancelButton.Type = ReaLTaiizor.Controls.MaterialButton.MaterialButtonType.Contained;
             this.cancelButton.UseAccentColor = false;
             this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // materialTextBox2
             // 
@@ -173,6 +153,27 @@ namespace MissionActionsPlugin
             this.materialTextBox2.Size = new System.Drawing.Size(68, 50);
             this.materialTextBox2.TabIndex = 3;
             this.materialTextBox2.Text = "";
+            // 
+            // okButton
+            // 
+            this.okButton.AutoSize = false;
+            this.okButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.okButton.Depth = 0;
+            this.okButton.DrawShadows = true;
+            this.okButton.HighEmphasis = true;
+            this.okButton.Icon = null;
+            this.okButton.Location = new System.Drawing.Point(391, 479);
+            this.okButton.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+            this.okButton.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
+            this.okButton.Name = "okButton";
+            this.okButton.Size = new System.Drawing.Size(108, 60);
+            this.okButton.TabIndex = 0;
+            this.okButton.Text = "OK";
+            this.okButton.TextState = ReaLTaiizor.Controls.MaterialButton.TextStateType.Normal;
+            this.okButton.Type = ReaLTaiizor.Controls.MaterialButton.MaterialButtonType.Contained;
+            this.okButton.UseAccentColor = false;
+            this.okButton.UseVisualStyleBackColor = true;
+            this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // ApproachParametersForm
             // 
