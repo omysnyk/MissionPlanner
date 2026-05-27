@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Forms;
 using ReaLTaiizor.Colors;
 using ReaLTaiizor.Forms;
@@ -13,9 +15,12 @@ namespace MissionActionsPlugin
         public float ChangeSpeedActivationDistance = 10;
         public float TrackerApproachActivationDistance { get; set; }
         public int TrackerActivationPoint { get; set; }
+
+        private readonly List<int> _waypoints;
         
-        public ApproachParametersForm()
+        public ApproachParametersForm(List<int> waypoints)
         {
+            _waypoints = waypoints;
             InitializeComponent();
             
             var materialManager = MaterialManager.Instance;
@@ -32,7 +37,7 @@ namespace MissionActionsPlugin
         {
             ApproachAltitude = Convert.ToInt32(approachAltComboBox.SelectedItem);
             TrackerActivationPoint = Convert.ToInt32(trackerActivationWpComboBox.SelectedItem);
-            //TrackerApproachActivationDistance = Convert.ToSingle(trackerApproachDistTextBox.Text);
+            TrackerApproachActivationDistance = Convert.ToSingle(double.Parse( trackerApproachDistTextBox.Text.Trim().Replace(',', '.'), CultureInfo.InvariantCulture));
             ChangeSpeedBeforeApproach = stabilizeSpeedSwitch.CheckState == CheckState.Checked;
             DialogResult = DialogResult.OK;
             Close();

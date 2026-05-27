@@ -55,6 +55,7 @@
             this.ruleColumnHeader = new System.Windows.Forms.ColumnHeader();
             this.ruleColorColumnHeader = new System.Windows.Forms.ColumnHeader();
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.maxAltCheckBox = new ReaLTaiizor.Controls.MaterialCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
             // 
@@ -71,14 +72,14 @@
             this.targetAltTextBox.Depth = 0;
             this.targetAltTextBox.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.targetAltTextBox.Hint = "Target Alt";
-            this.targetAltTextBox.Location = new System.Drawing.Point(203, 119);
+            this.targetAltTextBox.Location = new System.Drawing.Point(268, 118);
             this.targetAltTextBox.Margin = new System.Windows.Forms.Padding(0);
             this.targetAltTextBox.MaxLength = 50;
             this.targetAltTextBox.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.OUT;
             this.targetAltTextBox.Multiline = false;
             this.targetAltTextBox.Name = "targetAltTextBox";
             this.targetAltTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.targetAltTextBox.Size = new System.Drawing.Size(151, 50);
+            this.targetAltTextBox.Size = new System.Drawing.Size(152, 50);
             this.targetAltTextBox.TabIndex = 1;
             this.targetAltTextBox.Text = "";
             this.targetAltTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.targetAltTextBox_Validating);
@@ -90,7 +91,7 @@
             this.minAltTextBox.Depth = 0;
             this.minAltTextBox.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.minAltTextBox.Hint = "Min Alt";
-            this.minAltTextBox.Location = new System.Drawing.Point(369, 119);
+            this.minAltTextBox.Location = new System.Drawing.Point(442, 118);
             this.minAltTextBox.Margin = new System.Windows.Forms.Padding(0);
             this.minAltTextBox.MaxLength = 50;
             this.minAltTextBox.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.OUT;
@@ -108,7 +109,7 @@
             this.altModeSwitch.AutoSize = true;
             this.altModeSwitch.Depth = 0;
             this.altModeSwitch.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.altModeSwitch.Location = new System.Drawing.Point(527, 119);
+            this.altModeSwitch.Location = new System.Drawing.Point(610, 118);
             this.altModeSwitch.Margin = new System.Windows.Forms.Padding(0);
             this.altModeSwitch.MouseLocation = new System.Drawing.Point(-1, -1);
             this.altModeSwitch.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
@@ -131,8 +132,8 @@
             this.clearRuleAssignmentsButton.DrawShadows = true;
             this.clearRuleAssignmentsButton.HighEmphasis = false;
             this.clearRuleAssignmentsButton.Icon = null;
-            this.clearRuleAssignmentsButton.Location = new System.Drawing.Point(839, 982);
-            this.clearRuleAssignmentsButton.Margin = new System.Windows.Forms.Padding(5);
+            this.clearRuleAssignmentsButton.Location = new System.Drawing.Point(838, 982);
+            this.clearRuleAssignmentsButton.Margin = new System.Windows.Forms.Padding(6, 9, 6, 9);
             this.clearRuleAssignmentsButton.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.clearRuleAssignmentsButton.Name = "clearRuleAssignmentsButton";
             this.clearRuleAssignmentsButton.Size = new System.Drawing.Size(108, 60);
@@ -153,8 +154,8 @@
             this.addRuleButton.DrawShadows = true;
             this.addRuleButton.HighEmphasis = true;
             this.addRuleButton.Icon = null;
-            this.addRuleButton.Location = new System.Drawing.Point(957, 119);
-            this.addRuleButton.Margin = new System.Windows.Forms.Padding(5);
+            this.addRuleButton.Location = new System.Drawing.Point(957, 118);
+            this.addRuleButton.Margin = new System.Windows.Forms.Padding(6, 9, 6, 9);
             this.addRuleButton.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.addRuleButton.Name = "addRuleButton";
             this.addRuleButton.Size = new System.Drawing.Size(108, 60);
@@ -194,7 +195,7 @@
             this.rulesListView.FullRowSelect = true;
             this.rulesListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.rulesListView.HideSelection = false;
-            this.rulesListView.Location = new System.Drawing.Point(41, 227);
+            this.rulesListView.Location = new System.Drawing.Point(40, 212);
             this.rulesListView.Margin = new System.Windows.Forms.Padding(4);
             this.rulesListView.MinimumSize = new System.Drawing.Size(240, 120);
             this.rulesListView.MouseLocation = new System.Drawing.Point(-1, -1);
@@ -202,7 +203,7 @@
             this.rulesListView.MultiSelect = false;
             this.rulesListView.Name = "rulesListView";
             this.rulesListView.OwnerDraw = true;
-            this.rulesListView.Size = new System.Drawing.Size(1024, 288);
+            this.rulesListView.Size = new System.Drawing.Size(1024, 262);
             this.rulesListView.TabIndex = 8;
             this.rulesListView.UseCompatibleStateImageBehavior = false;
             this.rulesListView.View = System.Windows.Forms.View.Details;
@@ -235,7 +236,7 @@
             this.validateButton.HighEmphasis = true;
             this.validateButton.Icon = null;
             this.validateButton.Location = new System.Drawing.Point(956, 982);
-            this.validateButton.Margin = new System.Windows.Forms.Padding(5, 7, 5, 7);
+            this.validateButton.Margin = new System.Windows.Forms.Padding(4, 8, 4, 8);
             this.validateButton.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.validateButton.Name = "validateButton";
             this.validateButton.Size = new System.Drawing.Size(108, 60);
@@ -251,9 +252,10 @@
             // 
             this.maxAltTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.maxAltTextBox.Depth = 0;
+            this.maxAltTextBox.Enabled = false;
             this.maxAltTextBox.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.maxAltTextBox.Hint = "Max Alt";
-            this.maxAltTextBox.Location = new System.Drawing.Point(41, 119);
+            this.maxAltTextBox.Location = new System.Drawing.Point(102, 118);
             this.maxAltTextBox.Margin = new System.Windows.Forms.Padding(0);
             this.maxAltTextBox.MaxLength = 50;
             this.maxAltTextBox.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.OUT;
@@ -276,8 +278,8 @@
             this.assignRuleButton.Enabled = false;
             this.assignRuleButton.HighEmphasis = true;
             this.assignRuleButton.Icon = null;
-            this.assignRuleButton.Location = new System.Drawing.Point(956, 579);
-            this.assignRuleButton.Margin = new System.Windows.Forms.Padding(5);
+            this.assignRuleButton.Location = new System.Drawing.Point(956, 504);
+            this.assignRuleButton.Margin = new System.Windows.Forms.Padding(6, 9, 6, 9);
             this.assignRuleButton.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.assignRuleButton.Name = "assignRuleButton";
             this.assignRuleButton.Size = new System.Drawing.Size(108, 60);
@@ -298,8 +300,8 @@
             this.deleteButton.DrawShadows = true;
             this.deleteButton.HighEmphasis = false;
             this.deleteButton.Icon = null;
-            this.deleteButton.Location = new System.Drawing.Point(839, 579);
-            this.deleteButton.Margin = new System.Windows.Forms.Padding(5);
+            this.deleteButton.Location = new System.Drawing.Point(838, 504);
+            this.deleteButton.Margin = new System.Windows.Forms.Padding(6, 9, 6, 9);
             this.deleteButton.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.deleteButton.Name = "deleteButton";
             this.deleteButton.Size = new System.Drawing.Size(108, 60);
@@ -328,7 +330,7 @@
             this.segmentStartWPComboBox.Hint = "Start WP";
             this.segmentStartWPComboBox.IntegralHeight = false;
             this.segmentStartWPComboBox.ItemHeight = 43;
-            this.segmentStartWPComboBox.Location = new System.Drawing.Point(41, 579);
+            this.segmentStartWPComboBox.Location = new System.Drawing.Point(40, 504);
             this.segmentStartWPComboBox.MaxDropDownItems = 4;
             this.segmentStartWPComboBox.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.OUT;
             this.segmentStartWPComboBox.Name = "segmentStartWPComboBox";
@@ -354,7 +356,7 @@
             this.segmentEndWPComboBox.Hint = "End WP";
             this.segmentEndWPComboBox.IntegralHeight = false;
             this.segmentEndWPComboBox.ItemHeight = 43;
-            this.segmentEndWPComboBox.Location = new System.Drawing.Point(289, 579);
+            this.segmentEndWPComboBox.Location = new System.Drawing.Point(290, 504);
             this.segmentEndWPComboBox.MaxDropDownItems = 4;
             this.segmentEndWPComboBox.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.OUT;
             this.segmentEndWPComboBox.Name = "segmentEndWPComboBox";
@@ -365,7 +367,6 @@
             // 
             // rulesAssignmentsListView
             // 
-            this.rulesAssignmentsListView.AllowDrop = true;
             this.rulesAssignmentsListView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.rulesAssignmentsListView.AutoSizeTable = false;
             this.rulesAssignmentsListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
@@ -376,7 +377,7 @@
             this.rulesAssignmentsListView.FullRowSelect = true;
             this.rulesAssignmentsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.rulesAssignmentsListView.HideSelection = false;
-            this.rulesAssignmentsListView.Location = new System.Drawing.Point(41, 683);
+            this.rulesAssignmentsListView.Location = new System.Drawing.Point(40, 597);
             this.rulesAssignmentsListView.Margin = new System.Windows.Forms.Padding(4);
             this.rulesAssignmentsListView.MinimumSize = new System.Drawing.Size(240, 120);
             this.rulesAssignmentsListView.MouseLocation = new System.Drawing.Point(-1, -1);
@@ -384,7 +385,7 @@
             this.rulesAssignmentsListView.MultiSelect = false;
             this.rulesAssignmentsListView.Name = "rulesAssignmentsListView";
             this.rulesAssignmentsListView.OwnerDraw = true;
-            this.rulesAssignmentsListView.Size = new System.Drawing.Size(1024, 271);
+            this.rulesAssignmentsListView.Size = new System.Drawing.Size(1024, 357);
             this.rulesAssignmentsListView.TabIndex = 14;
             this.rulesAssignmentsListView.UseCompatibleStateImageBehavior = false;
             this.rulesAssignmentsListView.View = System.Windows.Forms.View.Details;
@@ -414,6 +415,20 @@
             // 
             this.errorProvider.ContainerControl = this;
             // 
+            // maxAltCheckBox
+            // 
+            this.maxAltCheckBox.Depth = 0;
+            this.maxAltCheckBox.Location = new System.Drawing.Point(40, 126);
+            this.maxAltCheckBox.Margin = new System.Windows.Forms.Padding(0);
+            this.maxAltCheckBox.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.maxAltCheckBox.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
+            this.maxAltCheckBox.Name = "maxAltCheckBox";
+            this.maxAltCheckBox.Ripple = true;
+            this.maxAltCheckBox.Size = new System.Drawing.Size(56, 56);
+            this.maxAltCheckBox.TabIndex = 16;
+            this.maxAltCheckBox.UseVisualStyleBackColor = true;
+            this.maxAltCheckBox.CheckedChanged += new System.EventHandler(this.maxAltCheckBox_CheckedChanged);
+            // 
             // AltitudeValidationParamForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
@@ -421,6 +436,7 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1107, 1086);
+            this.Controls.Add(this.maxAltCheckBox);
             this.Controls.Add(this.rulesAssignmentsListView);
             this.Controls.Add(this.segmentEndWPComboBox);
             this.Controls.Add(this.segmentStartWPComboBox);
@@ -450,6 +466,8 @@
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private ReaLTaiizor.Controls.MaterialCheckBox maxAltCheckBox;
 
         private System.Windows.Forms.ErrorProvider errorProvider;
 

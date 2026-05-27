@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Accord.Math;
+using MissionPlanner.Utilities;
 using ReaLTaiizor.Colors;
 using ReaLTaiizor.Controls;
 using ReaLTaiizor.Forms;
@@ -25,6 +26,7 @@ namespace MissionActionsPlugin
         private int _selectedSegmentStartWp = -1;
         private int _selectedSegmentEndWp = -1;
         private int _selectedRule = -1;
+        private bool _isEditRule = false;
 
         private const int GridColumnsCount = 26;
         private const int GridRowsCount = 5;
@@ -40,7 +42,7 @@ namespace MissionActionsPlugin
             {
                 _routeWaypointSegments.Add((_waypoints[i - 1], _waypoints[i]));
             }
-            _palette = GetRandomPalette(_routeWaypointSegments.Count / 2);
+            _palette = ColorUtils.GeneratePairPalette(_routeWaypointSegments.Count / 2);
             _currenRuleColor = _palette[_colorCount++ % _palette.Count];
 
             InitializeComponent();
@@ -63,7 +65,6 @@ namespace MissionActionsPlugin
         private void InitTheme()
         {
             var materialManager = MaterialManager.Instance;
-
             materialManager.AddFormToManage(this);
             materialManager.Theme = MaterialManager.Themes.DARK;
             materialManager.ColorScheme = new MaterialColorScheme(MaterialPrimary.LightGreen900,
@@ -71,19 +72,37 @@ namespace MissionActionsPlugin
                 MaterialTextShade.WHITE);
         }
 
-        private List<(Color, Color)> GetRandomPalette(int colorCount)
-        {
-            var p = ColorUtils.GeneratePairPalette(colorCount);
-            p.Shuffle();
-            return p;
-        }
-
         private void addRuleButton_Click(object sender, EventArgs e)
         {
+            var maxAltEnabled = maxAltCheckBox.Checked;
+            var maxAlt = maxAltEnabled ? int.Parse(maxAltTextBox.Text) : -1;
+            var minAlt = int.Parse(minAltTextBox.Text);
+            var targetAlt = int.Parse(targetAltTextBox.Text);
+
+            if (_isEditRule)
+            {
+                var validationRule = Rules[_selectedRule];
+                validationRule.ValidationMode = altModeSwitch.CheckState == CheckState.Checked
+                    ? AltitudeValidationMode.ASL 
+                    : altModeSwitch.CheckState == CheckState.Unchecked
+                        ? AltitudeValidationMode.AGL 
+                        : validationRule.ValidationMode;
+
+                validationRule.MaxAlt = maxAlt;
+                validationRule.MaxAltEnabled = maxAltEnabled;
+                validationRule.MinAlt = minAlt;
+                validationRule.TargetAlt = targetAlt;
+            
+                Rules[_selectedRule] = validationRule;
+                rulesListView.Items[_selectedRule] = ItemFromRule(validationRule);
+                rulesListView.Invalidate();
+                return;
+            }
+
             var newItem = new ListViewItem(new[]
             {
                 $"{Rules.LastOrDefault().RuleId + 1}",
-                maxAltTextBox.Text,
+                maxAltEnabled ? maxAltTextBox.Text : "-",
                 targetAltTextBox.Text,
                 minAltTextBox.Text,
                 altModeSwitch.Checked ? nameof(AltitudeValidationMode.ASL)  : nameof(AltitudeValidationMode.AGL)
@@ -91,36 +110,49 @@ namespace MissionActionsPlugin
             newItem.SubItems.Add("").Tag = _currenRuleColor.Item1;
 
             rulesListView.Items.Add(newItem);
+            
+
+            if (minAlt > targetAlt)
+            {
+                MessageBox.Show(@"Min altitude expected to be less than target altitude", @"Invalid altitude",  MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (maxAlt < targetAlt && maxAltEnabled)
+            {
+                MessageBox.Show(@"Max altitude expected to be greater than target altitude", @"Invalid altitude",  MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             Rules.Add(
                 new ValidationRule
                 {
                     RuleId = Rules.LastOrDefault().RuleId + 1,
-                    MaxAlt = int.Parse(maxAltTextBox.Text),
-                    MinAlt = int.Parse(minAltTextBox.Text),
-                    TargetAlt = int.Parse(targetAltTextBox.Text),
-                    //SegmentEnd = _waypoints[_selectedRangeEnd],
+                    MaxAltEnabled = maxAltEnabled,
+                    MaxAlt = maxAlt,
+                    MinAlt = minAlt,
+                    TargetAlt = targetAlt,
                     ValidationMode = altModeSwitch.Checked ? AltitudeValidationMode.ASL : AltitudeValidationMode.AGL,
                     RuleColor = _currenRuleColor.Item1
                 });
-            /*addRuleButton.Enabled = false;
-            validateButton.Enabled = _selectedRangeEnd == _waypoints.Count - 1;
-
-            startWaypointTextBox.Text = $"{_waypoints[_selectedRangeEnd]}";
-            _selectedRangeStart = _selectedRangeEnd + 1;
-            _selectedRangeEnd = -1;
-
-            if (_selectedRangeStart >= _waypoints.Count)
-            {
-                return;
-            }
-
             
-            endWaypointTextBox.Text = "";*/
             _currenRuleColor = _palette[_colorCount++ % _palette.Count];
-            /*var button = GetButtonByIndex(_selectedRangeStart);
-            button.PrimaryColor = _currenRangeColor.Item1;
-            button.Invalidate();*/
             rulesListView.Invalidate();
+        }
+
+        private static ListViewItem ItemFromRule(ValidationRule validationRule)
+        {
+            var item = new ListViewItem(new[]
+            {
+                $"{validationRule.RuleId}",
+                validationRule.MaxAltEnabled ? $"{validationRule.MaxAlt}" : "-",
+                $"{validationRule.TargetAlt}",
+                $"{validationRule.MinAlt}",
+                $"{validationRule.ValidationMode}"
+            });
+            item.SubItems.Add("").Tag = validationRule.RuleColor;
+            
+            return item;
         }
 
         private void FillRulesTable()
@@ -150,14 +182,7 @@ namespace MissionActionsPlugin
             for (var index = 0; index < RulesAssignments.Count; index++)
             {
                 var ruleAssigment = RulesAssignments[index];
-                var newItem = new ListViewItem(new[]
-                {
-                    $@"{ruleAssigment.SegmentStart}",
-                    $"{ruleAssigment.SegmentEnd}",
-                    $"{ruleAssigment.Rule.RuleId}"
-                });
-                newItem.SubItems.Add("").Tag = ruleAssigment.Rule.RuleColor;
-                rulesAssignmentsListView.Items.Add(newItem);
+                rulesAssignmentsListView.Items.Add(ItemFromRuleAssignment(ruleAssigment));
             }
             rulesAssignmentsListView.ResumeLayout(true);
         }
@@ -222,6 +247,7 @@ namespace MissionActionsPlugin
             validateButton.Enabled = false;
             segmentStartWPComboBox.Enabled = false;
             segmentEndWPComboBox.Enabled = false;
+            addRuleButton.Text = @"Add Rule";
         }
 
         private void rulesListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -229,6 +255,8 @@ namespace MissionActionsPlugin
             var selection = rulesListView.SelectedIndices;
             if (selection.Count == 0)
             {
+                _isEditRule = false;
+                addRuleButton.Text = @"Add Rule";
                 segmentStartWPComboBox.Enabled = false;
                 segmentEndWPComboBox.Enabled = false;
                 segmentEndWPComboBox.Items.Clear();
@@ -238,6 +266,7 @@ namespace MissionActionsPlugin
 
             if (selection.Count > 1)
             {
+                _isEditRule = false;
                 return;
             }
 
@@ -246,10 +275,13 @@ namespace MissionActionsPlugin
                 FillStartWaypoints();
             }
 
+            _isEditRule = true;
+            addRuleButton.Text = @"Save Rule";
             _selectedRule = selection[0];
             segmentStartWPComboBox.Enabled = true;
             
             var validationRule = Rules[_selectedRule];
+            maxAltCheckBox.Checked = validationRule.MaxAltEnabled;
             maxAltTextBox.Text = $@"{validationRule.MaxAlt}";
             minAltTextBox.Text = $@"{validationRule.MinAlt}";
             targetAltTextBox.Text = $@"{validationRule.TargetAlt}";
@@ -273,26 +305,28 @@ namespace MissionActionsPlugin
 
         private void assignRuleButton_Click(object sender, EventArgs e)
         {
-            var ruleAssingment = new RuleAssignment
+            if (_selectedRule < 0)
+            {
+                return;
+            }
+            
+            var ruleAssignment = new RuleAssignment
             {
                 SegmentStart =  _selectedSegmentStartWp,
                 SegmentEnd =  _selectedSegmentEndWp,
                 Rule = Rules[_selectedRule]
             };
+            RulesAssignments.Add(ruleAssignment);
+            RulesAssignments.Sort((assignment, assignment1) => { var cmp = assignment.SegmentStart.CompareTo(assignment1.SegmentStart);
+                return cmp != 0 ? cmp : assignment.SegmentEnd.CompareTo(assignment1.SegmentEnd);});
             
-            var newItem = new ListViewItem(new[]
-            {
-                $"{ruleAssingment.SegmentStart}",
-                $"{ruleAssingment.SegmentEnd}",
-                $"{ruleAssingment.Rule.RuleId}:[{ruleAssingment.Rule.MaxAlt}<{ruleAssingment.Rule.TargetAlt}>{ruleAssingment.Rule.MinAlt}] {ruleAssingment.Rule.ValidationMode}"
-            });
-            newItem.SubItems.Add("").Tag = ruleAssingment.Rule.RuleColor;
-            rulesAssignmentsListView.Items.Add(newItem);
+            rulesAssignmentsListView.Items.Clear();
+            rulesAssignmentsListView.Items.AddRange(RulesAssignments.Select(ItemFromRuleAssignment).ToArray());
             rulesAssignmentsListView.Invalidate();
             
             for (var i = _routeWaypointSegments.Count - 1; i >= 0; i--)
             {
-                if (_routeWaypointSegments[i]?.Item2 <= ruleAssingment.SegmentEnd && _routeWaypointSegments[i]?.Item1 >= ruleAssingment.SegmentStart)
+                if (_routeWaypointSegments[i]?.Item2 <= ruleAssignment.SegmentEnd && _routeWaypointSegments[i]?.Item1 >= ruleAssignment.SegmentStart)
                 {
                     _routeWaypointSegments[i] = null;
                 }
@@ -300,9 +334,19 @@ namespace MissionActionsPlugin
             
             FillStartWaypoints();
             FillEndWaypoints();
-            
-            RulesAssignments.Add(ruleAssingment);
             validateButton.Enabled = true;
+        }
+
+        private static ListViewItem ItemFromRuleAssignment(RuleAssignment ruleAssignment)
+        {
+            var newItem = new ListViewItem(new[]
+            {
+                $"{ruleAssignment.SegmentStart}",
+                $"{ruleAssignment.SegmentEnd}",
+                $"{ruleAssignment.Rule.RuleId}:[{ruleAssignment.Rule.MaxAlt}<{ruleAssignment.Rule.TargetAlt}>{ruleAssignment.Rule.MinAlt}] {ruleAssignment.Rule.ValidationMode}"
+            });
+            newItem.SubItems.Add("").Tag = ruleAssignment.Rule.RuleColor;
+            return newItem;
         }
 
         private void ListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
@@ -357,16 +401,14 @@ namespace MissionActionsPlugin
                 return;
             }
             
-            var validationRule = Rules[_selectedRule];
-            validationRule.ValidationMode = altModeSwitch.CheckState == CheckState.Checked
-                ? AltitudeValidationMode.ASL 
-                : altModeSwitch.CheckState == CheckState.Unchecked
-                ? AltitudeValidationMode.AGL 
-                : validationRule.ValidationMode;
-            
-            Rules[_selectedRule] = validationRule;
-
-            rulesListView.Items[_selectedRule].SubItems[4].Text = $@"{validationRule.ValidationMode}";
+            // var validationRule = Rules[_selectedRule];
+            // var mode = altModeSwitch.CheckState == CheckState.Checked
+            //     ? AltitudeValidationMode.ASL 
+            //     : altModeSwitch.CheckState == CheckState.Unchecked
+            //     ? AltitudeValidationMode.AGL 
+            //     : validationRule.ValidationMode;
+            //
+            // rulesListView.Items[_selectedRule].SubItems[4].Text = $@"{mode}";
         }
 
         private void targetAltTextBox_Validating(object sender, CancelEventArgs e)
@@ -379,7 +421,7 @@ namespace MissionActionsPlugin
             if (string.IsNullOrWhiteSpace(altTextBox.Text))
             {
                 errorProvider.SetError(altTextBox, "Field is required");
-                e.Cancel = true;  // keeps focus on textBox1
+                e.Cancel = true; 
             }
             else if (!int.TryParse(altTextBox.Text, out _))
             {
@@ -388,7 +430,7 @@ namespace MissionActionsPlugin
             }
             else
             {
-                errorProvider.SetError(altTextBox, "");  // clear error
+                errorProvider.SetError(altTextBox, ""); 
             }
         }
 
@@ -399,11 +441,11 @@ namespace MissionActionsPlugin
                 return;
             }
             
-            var validationRule = Rules[_selectedRule];
-            validationRule.MaxAlt = Convert.ToInt32(maxAltTextBox.Text);
-            Rules[_selectedRule] = validationRule;
-
-            rulesListView.Items[_selectedRule].SubItems[1].Text = maxAltTextBox.Text;
+            // var validationRule = Rules[_selectedRule];
+            // validationRule.MaxAlt = Convert.ToInt32(maxAltTextBox.Text);
+            // Rules[_selectedRule] = validationRule;
+            //
+            // rulesListView.Items[_selectedRule].SubItems[1].Text = maxAltTextBox.Text;
         }
 
         private void maxAltTextBox_Validated(object sender, EventArgs e)
@@ -413,11 +455,11 @@ namespace MissionActionsPlugin
                 return;
             }
             
-            var validationRule = Rules[_selectedRule];
-            validationRule.TargetAlt = Convert.ToInt32(targetAltTextBox.Text);
-            Rules[_selectedRule] = validationRule;
-
-            rulesListView.Items[_selectedRule].SubItems[2].Text = targetAltTextBox.Text;
+            // var validationRule = Rules[_selectedRule];
+            // validationRule.TargetAlt = Convert.ToInt32(targetAltTextBox.Text);
+            // Rules[_selectedRule] = validationRule;
+            //
+            // rulesListView.Items[_selectedRule].SubItems[2].Text = targetAltTextBox.Text;
         }
 
         private void maxAltTextBox_Validating(object sender, CancelEventArgs e)
@@ -432,82 +474,16 @@ namespace MissionActionsPlugin
                 return;
             }
             
-            var validationRule = Rules[_selectedRule];
-            validationRule.MinAlt = Convert.ToInt32(minAltTextBox.Text);
-            Rules[_selectedRule] = validationRule;
-
-            rulesListView.Items[_selectedRule].SubItems[3].Text = minAltTextBox.Text;
+            // var validationRule = Rules[_selectedRule];
+            // validationRule.MinAlt = Convert.ToInt32(minAltTextBox.Text);
+            // Rules[_selectedRule] = validationRule;
+            //
+            // rulesListView.Items[_selectedRule].SubItems[3].Text = minAltTextBox.Text;
         }
 
         private void minAltTextBox_Validating(object sender, CancelEventArgs e)
         {
             ValidateAlt(e, minAltTextBox);
-        }
-
-        public static void CeilKey<T>(SortedList<int, T> map, int key, out T value)
-        {
-            int lo = 0;
-            int hi = map.Count - 1;
-
-            while (lo <= hi)
-            {
-                int mid = lo + ((hi - lo) / 2);
-
-                int midKey = map.Keys[mid];
-
-                if (midKey == key)
-                {
-                    value = map.Values[mid];
-                    return;
-                }
-
-                if (midKey < key)
-                    lo = mid + 1;
-                else
-                    hi = mid - 1;
-            }
-
-            // lo now points to ceil element
-            if (lo < map.Count)
-            {
-                value = map.Values[lo];
-                return;
-            }
-
-            value = default;
-        }
-
-        public static void FloorKey<T>(SortedList<int, T> map, int key, out T value)
-        {
-            var lo = 0;
-            var hi = map.Count - 1;
-
-            while (lo <= hi)
-            {
-                var mid = lo + ((hi - lo) / 2);
-
-                var midKey = map.Keys[mid];
-
-                if (midKey == key)
-                {
-                    value = map.Values[mid];
-                    return;
-                }
-
-                if (midKey < key)
-                    lo = mid + 1;
-                else
-                    hi = mid - 1;
-            }
-
-            // hi now points to floor element
-            if (hi >= 0)
-            {
-                value = map.Values[hi];
-                return;
-            }
-
-            value = default;
         }
 
         private void clearRuleAssignmentsButton_Click(object sender, EventArgs e)
@@ -525,65 +501,16 @@ namespace MissionActionsPlugin
             rulesAssignmentsListView.Invalidate();
             validateButton.Enabled = false;
         }
-    }
 
-    public struct RuleAssignment
-    {
-        public ValidationRule Rule { get; set; }
-        public int SegmentStart { get; set; }
-        public int SegmentEnd { get; set; }
-    }
-
-    public struct ValidationRule
-    {
-        public int RuleId { get; set; }
-        public int MaxAlt { get; set; }
-        public int TargetAlt { get; set; }
-        public int MinAlt { get; set; }
-        public AltitudeValidationMode ValidationMode { get; set; }
-
-        public Color RuleColor { get; set; }
-
-        public double OverlimitDegree(double routeAltitude, double terrainAltitude)
+        private void maxAltCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (ValidationMode == AltitudeValidationMode.ASL)
-            {
-                if (routeAltitude < MinAlt)
-                {
-                    return -1.0;
-                }
-            
-                if (routeAltitude > TargetAlt + 20)
-                {
-                    return 1.0;
-                }
-            
-                if (routeAltitude < TargetAlt * 0.95)
-                {
-                    return -0.5;
-                }
-                
-                return 0.0;
-            }
+            maxAltTextBox.Enabled = maxAltCheckBox.Checked;
+        }
 
-            var elevation = routeAltitude - terrainAltitude;
-
-            if (elevation < MinAlt)
-            {
-                return -1.0;
-            }
-            
-            if (elevation >= MaxAlt)
-            {
-                return 1.0;
-            }
-            
-            if (elevation < TargetAlt * 0.95)
-            {
-                return -0.5;
-            }
-
-            return 0.0;
+        private void AltitudeValidationParamForm_Shown(object sender, EventArgs e)
+        {
+            altModeSwitch.BackColor = MaterialManager.Instance.BackgroundColor;
+            altModeSwitch.Invalidate(true);
         }
     }
 

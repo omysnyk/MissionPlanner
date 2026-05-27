@@ -86,7 +86,7 @@ namespace MissionActionsPlugin
             this.trackerApproachDistTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.trackerApproachDistTextBox.Depth = 0;
             this.trackerApproachDistTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.trackerApproachDistTextBox.Hint = "Approach tracking actiavation distance";
+            this.trackerApproachDistTextBox.Hint = "Approach tracking actiavation distance, km";
             this.trackerApproachDistTextBox.Location = new System.Drawing.Point(57, 387);
             this.trackerApproachDistTextBox.MaxLength = 50;
             this.trackerApproachDistTextBox.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.OUT;

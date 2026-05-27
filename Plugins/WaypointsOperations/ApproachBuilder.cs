@@ -37,8 +37,22 @@ namespace WaypointsOperations
 
         public void AddApproachPoints()
         {
-           
-            var approachParametersForm = new ApproachParametersForm();
+            var flightPlanner = MainV2.instance.FlightPlanner;
+            var waypoints = new List<int>();
+
+            if (flightPlanner.pointlist == null)
+            {
+                return;
+            }
+
+            for (var i = 0; i < flightPlanner.pointlist.Count; i++)
+            {
+                if (flightPlanner.pointlist[i] != null && flightPlanner.pointlist[i].Tag != "H")
+                {
+                    waypoints.Add(int.Parse(flightPlanner.pointlist[i].Tag));
+                }
+            }
+            var approachParametersForm = new ApproachParametersForm(waypoints);
             if (approachParametersForm.ShowDialog() != DialogResult.OK)
                 return;
 
@@ -51,13 +65,12 @@ namespace WaypointsOperations
                 return;
             }
 
-            var flightPlanner = MainV2.instance.FlightPlanner;
+            
             var commands = flightPlanner.Commands;
 
-            var routePoints = flightPlanner.pointlist;
-            var routeLastPoints = (routePoints.AsEnumerable() ?? Array.Empty<PointLatLngAlt>())
+            var routePoints = flightPlanner.pointlist.Where(point => point != null && point.Tag != "H").ToList();
+            var routeLastPoints = routePoints?.Select(point => point)
                 .Reverse()
-                .Where(point => point != null && point.Tag != "H")
                 .Take(2)
                 .Reverse();
 
@@ -70,7 +83,7 @@ namespace WaypointsOperations
                 return;
             }
 
-            var endIndex = routePoints.Count(alt => alt?.Tag != "H") - 1; // exclude home if present
+            var endIndex = flightPlanner.pointlist.Count(alt => alt?.Tag != "H") - 1; // exclude home if present
             var lastPoint = finalApproachVector[1];
             var nextToLastPoint = finalApproachVector[0];
 
@@ -96,36 +109,49 @@ namespace WaypointsOperations
             }
 
             var verifyCheckerState = flightPlanner.CHK_verifyheight.Checked;
-            var distFromEnd = Math.Max(0, line.Distance - 2000);
-            var newPoint = line.Position(distFromEnd);
             var aimAlt = lastPoint.Alt + approachAlt;
 
             flightPlanner.CHK_verifyheight.CheckState = CheckState.Unchecked;
             flightPlanner.CHK_verifyheight.Checked = false;
-            _plugin.Host.InsertWP(endIndex, MAVLink.MAV_CMD.WAYPOINT, 0, 0, 0, 0,
-                newPoint.Longitude, newPoint.Latitude,
-                aimAlt);
 
-            distFromEnd = Math.Max(0, line.Distance - 1750);
-            newPoint = line.Position(distFromEnd);
-            _plugin.Host.InsertWP(endIndex + 1, MAVLink.MAV_CMD.DO_CHANGE_SPEED, 0, 42, 0, 0,
-                newPoint.Longitude, newPoint.Latitude,
-                aimAlt);
-
-            distFromEnd = Math.Max(0, line.Distance - 1500);
-            newPoint = line.Position(distFromEnd);
-            _plugin.Host.InsertWP(endIndex + 2, MAVLink.MAV_CMD.WAYPOINT, 0, 0, 0, 0,
-                newPoint.Longitude, newPoint.Latitude,
-                aimAlt);
-
+            // var totalDistFromEnd = line.Distance;
+            // int index = routePoints.Count - 2;
+            // var routeSegmentLine = line;
+            // var activationDist = approachParametersForm.TrackerApproachActivationDistance * 1000;
+            // while (totalDistFromEnd < activationDist && index >= 0)
+            // {
+            //     routeSegmentLine = Geod.InverseLine(routePoints[index].Lat, routePoints[index].Lng, routePoints[index + 1].Lat, routePoints[index + 1].Lng);
+            //     totalDistFromEnd +=  routeSegmentLine.Distance;
+            //     index--;
+            // }
+            // InsertWaypointAtLine(index + 1, activationDist - (totalDistFromEnd - routeSegmentLine.Distance), routePoints[index].Alt, routeSegmentLine);
+            // InsertCmdAtLine(index: index + 2, aimAlt: routePoints[index].Alt, distance: totalDistFromEnd - activationDist + 100, line: routeSegmentLine, mavCmd: MAVLink.MAV_CMD.DO_SET_SERVO, p2:2000, p1:16);
+            //
+            InsertWaypointAtLine(endIndex, 2000, aimAlt, line);
+            InsertCmdAtLine(index: endIndex + 2, aimAlt: aimAlt, distance: 1750, line: line, mavCmd: MAVLink.MAV_CMD.DO_CHANGE_SPEED, p2:42);
+            InsertWaypointAtLine(endIndex + 3, 1500, aimAlt, line);
             var aimPointDistance = approachAlt * 1.0 / Math.Tan(ToRadians(approachDescentAngle));
-            distFromEnd = Math.Max(0, line.Distance - aimPointDistance);
-            newPoint = line.Position(distFromEnd);
-            _plugin.Host.InsertWP(endIndex + 3, MAVLink.MAV_CMD.WAYPOINT, 0, 0, 0, 0,
-                newPoint.Longitude, newPoint.Latitude,
-                aimAlt);
+            InsertWaypointAtLine(endIndex + 4, aimPointDistance, aimAlt, line);
 
             flightPlanner.CHK_verifyheight.Checked = verifyCheckerState;
+        }
+
+        private void InsertWaypointAtLine(int index, double distance, double aimAlt, IGeodesicLine line)
+        {
+            var distFromEnd = Math.Max(0, line.Distance - distance);
+            var newPoint = line.Position(distFromEnd);
+            _plugin.Host.InsertWP(index, MAVLink.MAV_CMD.WAYPOINT, 0, 0, 0, 0,
+                newPoint.Longitude, newPoint.Latitude,
+                aimAlt);
+        }
+        
+        private void InsertCmdAtLine(int index, double distance, double aimAlt, IGeodesicLine line, MAVLink.MAV_CMD mavCmd, int p1 = 0, int p2 = 0)
+        {
+            var distFromEnd = Math.Max(0, line.Distance - distance);
+            var newPoint = line.Position(distFromEnd);
+            _plugin.Host.InsertWP(index, mavCmd, p1, p2, 0, 0,
+                newPoint.Longitude, newPoint.Latitude,
+                aimAlt);
         }
     }
 }

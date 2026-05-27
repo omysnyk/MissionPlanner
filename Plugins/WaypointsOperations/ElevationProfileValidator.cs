@@ -49,7 +49,7 @@ namespace MissionActionsPlugin
         private void OnMissionFileLoad(object sender, EventArgs e)
         {
             log.Info($"WP file reloaded, clear rules");
-            _validationRules.Clear();
+            // _validationRules.Clear();
             _ruleAssignments.Clear();
             _elevationValidationOverlay.Routes.Clear();
         }
@@ -57,7 +57,7 @@ namespace MissionActionsPlugin
         private void OnMissionCleared(object sender, EventArgs e)
         {
             log.Info($"Mission cleared, clear rules");
-            _validationRules.Clear();
+            // _validationRules.Clear();
             _ruleAssignments.Clear();
             _elevationValidationOverlay.Routes.Clear();
         }
@@ -112,24 +112,39 @@ namespace MissionActionsPlugin
                 log.Info($"Mission entries: {e.Action}");
                 
                 var waypoint = row.Index + 1;
-                // if (_plannerModule.pointlist[waypoint] == null)
-                // {
-                //     for (var i = 0; i < _ruleAssignments.Count; i++)
-                //     {
-                //         if (_ruleAssignments[i].SegmentStart >= waypoint)
-                //         {
-                //         }
-                //     }
-                // } 
-                _validationRules.Clear();
-                _ruleAssignments.Clear();
+                if (_plannerModule.pointlist[waypoint] == null)
+                {
+                    for (var i = 0; i < _ruleAssignments.Count; i++)
+                    {
+                        var ruleAssignment = _ruleAssignments[i];
+                        if (ruleAssignment.SegmentStart == waypoint)
+                        {
+                            _ruleAssignments[i] = new RuleAssignment
+                            {
+                                SegmentStart = _ruleAssignments[i].SegmentStart - 1,
+                                SegmentEnd = _ruleAssignments[i].SegmentEnd,
+                                Rule = _ruleAssignments[i].Rule
+                            };
+                        }
+                        if (ruleAssignment.SegmentEnd== waypoint)
+                        {
+                            _ruleAssignments[i] = new RuleAssignment
+                            {
+                                SegmentStart = _ruleAssignments[i].SegmentStart - 1,
+                                SegmentEnd = _ruleAssignments[i].SegmentEnd - 1,
+                                Rule = _ruleAssignments[i].Rule
+                            };
+                        }
+                    }
+                } 
+                // _validationRules.Clear();
+                // _ruleAssignments.Clear();
                 _elevationValidationOverlay.Routes.Clear();
             }
             
             if (e.Action == CollectionChangeAction.Remove)
             {
                 log.Info($"Mission entries: {e.Action}");
-                _validationRules.Clear();
                 _ruleAssignments.Clear();
                 _elevationValidationOverlay.Routes.Clear();
             }

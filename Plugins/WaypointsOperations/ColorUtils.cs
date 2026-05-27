@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using Accord.Math;
 
 namespace MissionActionsPlugin
 {
@@ -18,7 +19,25 @@ namespace MissionActionsPlugin
                 
                 palette.Add((light, dark));
             }
+            palette.Shuffle();
+            return palette;
+        }
+        
+        public static List<Color> GeneratePalette(int colorCount)
+        {
+            var palette = new List<Color>();
+            for (var i = 0; i < colorCount; i++)
+            {
+                var h = ((double)i) / colorCount;
+                var s = 1.0;
+                
+                var light = FromHsl(h, s, .65);
+                var dark = FromHsl(h, s, .35);
+                
+                palette.Add(light);
+            }
             
+            palette.Shuffle();
             return palette;
         }
 
