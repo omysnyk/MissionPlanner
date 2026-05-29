@@ -14,7 +14,6 @@ namespace MissionActionsPlugin
         public bool ChangeSpeedBeforeApproach { get; set; }
         public float ChangeSpeedActivationDistance = 10;
         public float TrackerApproachActivationDistance { get; set; }
-        public int TrackerActivationPoint { get; set; }
 
         private readonly List<int> _waypoints;
         
@@ -36,8 +35,8 @@ namespace MissionActionsPlugin
         private void okButton_Click(object sender, EventArgs e)
         {
             ApproachAltitude = Convert.ToInt32(approachAltComboBox.SelectedItem);
-            TrackerActivationPoint = Convert.ToInt32(trackerActivationWpComboBox.SelectedItem);
             TrackerApproachActivationDistance = Convert.ToSingle(double.Parse( trackerApproachDistTextBox.Text.Trim().Replace(',', '.'), CultureInfo.InvariantCulture));
+            ChangeSpeedActivationDistance = Convert.ToSingle(double.Parse( changeSpeedDistTextBox1.Text.Trim().Replace(',', '.'), CultureInfo.InvariantCulture));
             ChangeSpeedBeforeApproach = stabilizeSpeedSwitch.CheckState == CheckState.Checked;
             DialogResult = DialogResult.OK;
             Close();
@@ -47,6 +46,11 @@ namespace MissionActionsPlugin
         {
             DialogResult = DialogResult.Cancel;
             Close();
+        }
+
+        private void stabilizeSpeedSwitch_CheckedChanged(object sender, EventArgs e)
+        {
+            changeSpeedDistTextBox1.Enabled = stabilizeSpeedSwitch.Checked;
         }
     }
 }

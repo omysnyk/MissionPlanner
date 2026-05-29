@@ -35,7 +35,7 @@ namespace MissionActionsPlugin
 
         public override string Name => "Mission Actions";
         
-        public override string Version => "1.2.2";
+        public override string Version => "1.2.4";
 
         public override string Author => "Marquise de Carabas";
 
@@ -125,47 +125,6 @@ namespace MissionActionsPlugin
                 Padding = new Padding{All = 0},
                 Margin = new Padding(2)
             };
-            // var button = new ReaLTaiizor.Controls.Button {
-            //     // ButtonStyle = ButtonStyle.Normal,
-            //     BackColor = Color.FromArgb(0x94, 0xc1, 0x1f),
-            //     Text = "",
-            //     Image = icon,
-            //     ImageAlign = ContentAlignment.MiddleCenter,
-            //     // TextImageRelation = TextImageRelation.Overlay,
-            //     Size = size,
-            //     //FlatStyle = FlatStyle.Standard,
-            //     // FlatAppearance = { BorderSize = 0},
-            //     Padding = new Padding{All = 0},
-            //     Margin = new Padding(2)
-            // };
-
-            // var button = new MaterialButton
-            // {
-            //     AutoSize = false,
-            //     AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink,
-            //     Depth = 0,
-            //     DrawShadows = true,
-            //     HighEmphasis = false,
-            //     Icon = icon,
-            //     // Image = icon,
-            //     ImageAlign = ContentAlignment.MiddleCenter,
-            //     // BackgroundImage = icon,
-            //     // BackgroundImageLayout = ImageLayout.Center,
-            //     // Location = new System.Drawing.Point(280, 221),
-            //     Margin = new System.Windows.Forms.Padding(0),
-            //     MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER,
-            //     Name = "materialButton23",
-            //     Size = size,
-            //     // TabIndex = 7,
-            //     // Text = "CONT - ICON",
-            //     // TextState = ReaLTaiizor.Controls.MaterialButton.TextStateType.Normal,
-            //     // Type = ReaLTaiizor.Controls.MaterialButton.MaterialButtonType.Contained,
-            //     UseAccentColor = false,
-            //     UseVisualStyleBackColor = true,
-            //     BackColor = Color.FromArgb(0x94, 0xc1, 0x1f),
-            //     Padding = new Padding(0),
-            //     // SkinManager = {  }
-            // };
 
 
             button.Click += clickHandler;
