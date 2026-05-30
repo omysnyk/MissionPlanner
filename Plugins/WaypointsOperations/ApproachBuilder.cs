@@ -105,11 +105,11 @@ namespace WaypointsOperations
             flightPlanner.CHK_verifyheight.CheckState = CheckState.Unchecked;
             flightPlanner.CHK_verifyheight.Checked = false;
 
-            var insertIndex = routeNavigablePoints.Count;
+            int insertIndex;
             if (approachParametersForm.ChangeSpeedBeforeApproach)
             {
                 insertIndex = TryInsertCommandAtDistance(line, routeNavigablePoints,
-                    lastSegmentStartCmdIndex, lastSegmentEndCmdIndex, aimAlt,
+                    lastSegmentStartCmdIndex, aimAlt,
                     approachParametersForm.ChangeSpeedActivationDistance * 1000, MAVLink.MAV_CMD.DO_CHANGE_SPEED, 42,
                     0);
                 if (lastSegmentEndCmdIndex >= insertIndex)
@@ -129,8 +129,7 @@ namespace WaypointsOperations
             }
 
             var trackerApproachActivationDistance = approachParametersForm.TrackerApproachActivationDistance * 1000;
-            insertIndex = TryInsertCommandAtDistance(line, routeNavigablePoints, lastSegmentStartCmdIndex,
-                lastSegmentEndCmdIndex, aimAlt, 
+            insertIndex = TryInsertCommandAtDistance(line, routeNavigablePoints, lastSegmentStartCmdIndex, aimAlt, 
                 trackerApproachActivationDistance, MAVLink.MAV_CMD.DO_SET_SERVO, 2000, 16);
             
             if (lastSegmentEndCmdIndex >= insertIndex)
@@ -160,16 +159,15 @@ namespace WaypointsOperations
             flightPlanner.CHK_verifyheight.Checked = verifyCheckerState;
         }
 
-        private int TryInsertCommandAtDistance(IGeodesicLine line,
+        private int TryInsertCommandAtDistance(IGeodesicLine lastLeg,
             List<(PointLatLngAlt waypoint, int cmdIndex)> routeNavigablePoints,
             int lastSegmentStartCmdIndex,
-            int lastSegmentEndCmdIndex,
             double aimAlt,
             float dist, MAVLink.MAV_CMD cmd, int p2, int p1)
         {
-            var totalDistFromEnd = line.Distance;
+            var totalDistFromEnd = lastLeg.Distance;
             var index = routeNavigablePoints.Count - 3;
-            var routeSegmentLine = line;
+            var routeSegmentLine = lastLeg;
 
             while (totalDistFromEnd < dist && index >= 0)
             {

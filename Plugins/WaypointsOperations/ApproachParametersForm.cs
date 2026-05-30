@@ -50,7 +50,19 @@ namespace MissionActionsPlugin
 
         private void stabilizeSpeedSwitch_CheckedChanged(object sender, EventArgs e)
         {
+            
             changeSpeedDistTextBox1.Enabled = stabilizeSpeedSwitch.Checked;
+            if (stabilizeSpeedSwitch.Checked)
+            {
+                changeSpeedDistTextBox1.Text = $@"{ChangeSpeedActivationDistance}";
+                changeSpeedDistTextBox1.Hint = $@"Change speed distance, km";
+            }
+            else
+            {
+                ChangeSpeedActivationDistance = Convert.ToSingle(double.Parse( changeSpeedDistTextBox1.Text.Trim().Replace(',', '.'), CultureInfo.InvariantCulture));
+                changeSpeedDistTextBox1.Text = "";
+                changeSpeedDistTextBox1.Hint = $@"Will change speed at stabilization point";
+            }
         }
     }
 }

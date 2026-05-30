@@ -42,7 +42,7 @@ namespace MissionActionsPlugin
             {
                 _routeWaypointSegments.Add((_waypoints[i - 1], _waypoints[i]));
             }
-            _palette = ColorUtils.GeneratePairPalette(_routeWaypointSegments.Count / 2);
+            _palette = ColorUtils.GeneratePairPalette(1 + _routeWaypointSegments.Count / 2);
             _currenRuleColor = _palette[_colorCount++ % _palette.Count];
 
             InitializeComponent();
