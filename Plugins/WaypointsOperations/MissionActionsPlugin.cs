@@ -35,7 +35,7 @@ namespace MissionActionsPlugin
 
         public override string Name => "Mission Actions";
         
-        public override string Version => "1.2.4";
+        public override string Version => "1.2.5";
 
         public override string Author => "Marquise de Carabas";
 

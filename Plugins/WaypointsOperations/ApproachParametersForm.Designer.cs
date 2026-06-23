@@ -43,8 +43,6 @@ namespace MissionActionsPlugin
             // stabilizeSpeedSwitch
             // 
             this.stabilizeSpeedSwitch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
-            this.stabilizeSpeedSwitch.Checked = true;
-            this.stabilizeSpeedSwitch.CheckState = System.Windows.Forms.CheckState.Checked;
             this.stabilizeSpeedSwitch.Depth = 0;
             this.stabilizeSpeedSwitch.Location = new System.Drawing.Point(57, 201);
             this.stabilizeSpeedSwitch.Margin = new System.Windows.Forms.Padding(0);
@@ -162,8 +160,8 @@ namespace MissionActionsPlugin
             // 
             this.changeSpeedDistTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.changeSpeedDistTextBox1.Depth = 0;
-            this.changeSpeedDistTextBox1.DetectUrls = false;
-            this.changeSpeedDistTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.changeSpeedDistTextBox1.Enabled = false;
+            this.changeSpeedDistTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.changeSpeedDistTextBox1.Hint = "Change speed distance, km";
             this.changeSpeedDistTextBox1.Location = new System.Drawing.Point(57, 248);
             this.changeSpeedDistTextBox1.MaxLength = 50;

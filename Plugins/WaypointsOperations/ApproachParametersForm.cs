@@ -36,8 +36,10 @@ namespace MissionActionsPlugin
         {
             ApproachAltitude = Convert.ToInt32(approachAltComboBox.SelectedItem);
             TrackerApproachActivationDistance = Convert.ToSingle(double.Parse( trackerApproachDistTextBox.Text.Trim().Replace(',', '.'), CultureInfo.InvariantCulture));
-            ChangeSpeedActivationDistance = Convert.ToSingle(double.Parse( changeSpeedDistTextBox1.Text.Trim().Replace(',', '.'), CultureInfo.InvariantCulture));
             ChangeSpeedBeforeApproach = stabilizeSpeedSwitch.CheckState == CheckState.Checked;
+            ChangeSpeedActivationDistance = ChangeSpeedBeforeApproach 
+                ? Convert.ToSingle(double.Parse( changeSpeedDistTextBox1.Text.Trim().Replace(',', '.'), CultureInfo.InvariantCulture))
+                : -1;
             DialogResult = DialogResult.OK;
             Close();
         }
