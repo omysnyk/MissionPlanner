@@ -102,6 +102,7 @@ namespace WaypointsOperations
             var verifyCheckerState = flightPlanner.CHK_verifyheight.Checked;
             var aimAlt = lastPoint.Alt + approachAlt;
 
+            flightPlanner.CMB_altmode.SelectedIndex = 1;
             flightPlanner.CHK_verifyheight.CheckState = CheckState.Unchecked;
             flightPlanner.CHK_verifyheight.Checked = false;
 
@@ -189,7 +190,8 @@ namespace WaypointsOperations
             var insertPosition = routeNavigablePoints[index + 1];
             var nextPosition = routeNavigablePoints[index + 2];
             var deltaAlt = (nextPosition.waypoint.Alt - insertPosition.waypoint.Alt) / routeSegmentLine.Distance;
-            if (insertPosition.cmdIndex == lastSegmentStartCmdIndex)
+            
+            if (insertPosition.cmdIndex >= lastSegmentStartCmdIndex)
             {
                 deltaAlt = (aimAlt - insertPosition.waypoint.Alt) / (routeSegmentLine.Distance - 2000);
             }
