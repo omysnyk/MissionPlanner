@@ -223,6 +223,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MissionActionsPlugin", "Plu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KMZImporter", "Plugins\KMZImporter\KMZImporter.csproj", "{3A1F2604-495E-5616-0004-C89EAA73B299}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Windows.Forms-net_4_x", "ExtLibs\mono\mcs\class\System.Windows.Forms\System.Windows.Forms-net_4_x.csproj", "{4612199C-231E-4023-B97D-94F354663ED8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -562,6 +564,10 @@ Global
 		{3A1F2604-495E-5616-0004-C89EAA73B299}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A1F2604-495E-5616-0004-C89EAA73B299}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A1F2604-495E-5616-0004-C89EAA73B299}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4612199C-231E-4023-B97D-94F354663ED8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4612199C-231E-4023-B97D-94F354663ED8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4612199C-231E-4023-B97D-94F354663ED8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4612199C-231E-4023-B97D-94F354663ED8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
