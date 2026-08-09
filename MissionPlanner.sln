@@ -225,6 +225,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KMZImporter", "Plugins\KMZI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Windows.Forms-net_4_x", "ExtLibs\mono\mcs\class\System.Windows.Forms\System.Windows.Forms-net_4_x.csproj", "{4612199C-231E-4023-B97D-94F354663ED8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightSetupPlugin", "Plugins\FlightSetupPlugin\FlightSetupPlugin.csproj", "{391E5DB0-1E99-4E94-B5C9-E32001B9BDFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -568,6 +570,10 @@ Global
 		{4612199C-231E-4023-B97D-94F354663ED8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4612199C-231E-4023-B97D-94F354663ED8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4612199C-231E-4023-B97D-94F354663ED8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{391E5DB0-1E99-4E94-B5C9-E32001B9BDFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{391E5DB0-1E99-4E94-B5C9-E32001B9BDFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{391E5DB0-1E99-4E94-B5C9-E32001B9BDFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{391E5DB0-1E99-4E94-B5C9-E32001B9BDFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -656,6 +662,7 @@ Global
 		{1B7BA502-81BE-E37A-E82A-3BB298BCA984} = {7E264F12-9EC3-4CDC-A187-6879C2B2BFCF}
 		{E47DF785-A8DE-4CFA-8664-683CE3F9CC7F} = {9B3AC501-5FCB-4A2A-A628-BE0985DB2BD4}
 		{3A1F2604-495E-5616-0004-C89EAA73B299} = {9B3AC501-5FCB-4A2A-A628-BE0985DB2BD4}
+		{391E5DB0-1E99-4E94-B5C9-E32001B9BDFD} = {9B3AC501-5FCB-4A2A-A628-BE0985DB2BD4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FD2C9507-1A09-4F5B-98AB-B6B194A4B260}
